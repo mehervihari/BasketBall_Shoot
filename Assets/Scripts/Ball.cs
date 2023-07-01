@@ -23,6 +23,7 @@ public class Ball : MonoBehaviour
     private PhysicsScene2D predictionScenePhysics;
 
     public UnityEvent scoreEvent;
+    public UnityEvent<Transform> OnGroundEvent;
 
     public GameObject predictionBall;
 
@@ -103,12 +104,19 @@ public class Ball : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        CheckGroundCollision(collision);
+    }
+
+    private void CheckGroundCollision(Collision2D collision)
+    {
         if (!collision.gameObject.tag.Equals("ground")) return;
 
         rb2.isKinematic = true;
         transform.position = defaultBallPosition;
         rb2.velocity = Vector2.zero;
         rb2.angularVelocity = Vector2.zero.x;
+
+        OnGroundEvent.Invoke(transform);
     }
 
     private void CreateTrajectory(GameObject newPredictionBall)
